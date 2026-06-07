@@ -1104,17 +1104,17 @@ impl TypedActionView for AiProvidersPageView {
                                         } else {
                                             format!("http://localhost:{port}")
                                         };
-                        let label = match port {
-                            1234 => "LM Studio".to_owned(),
-                            5001 => "Kobold".to_owned(),
-                            7700 => "specsmith".to_owned(),
-                            7800 => "Vulkan AI Studio".to_owned(),
-                            8000 => "vLLM".to_owned(),
-                            8080 => "LocalAI".to_owned(),
-                            8081 => "Vulkan".to_owned(),
-                            11434 => "Ollama".to_owned(),
-                            _ => format!("Local :{port}"),
-                        };
+                                        let label = match port {
+                                            1234 => "LM Studio".to_owned(),
+                                            5001 => "Kobold".to_owned(),
+                                            7700 => "specsmith".to_owned(),
+                                            7800 => "Vulkan AI Studio".to_owned(),
+                                            8000 => "vLLM".to_owned(),
+                                            8080 => "LocalAI".to_owned(),
+                                            8081 => "Vulkan".to_owned(),
+                                            11434 => "Ollama".to_owned(),
+                                            _ => format!("Local :{port}"),
+                                        };
                                         found.push((label, base, port.to_string()));
                                         continue 'port; // found on this port, next port
                                     }
