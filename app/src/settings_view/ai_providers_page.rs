@@ -327,11 +327,12 @@ const BYOE_PRESETS: &[(&str, &str)] = &[
     ("Kobold", "http://localhost:5001/api"),
     ("LocalAI", "http://localhost:8080/v1"),
     ("Text Gen WebUI", "http://localhost:5000/v1"),
+    ("Vulkan", "http://localhost:8081/v1"),
     ("Custom\u{2026}", ""),
 ];
 
 const DISCOVER_PORTS: &[u16] = &[
-    1234, 3000, 4000, 5000, 5001, 7860, 8000, 8080, 8088, 8888, 9000, 11434,
+    1234, 3000, 4000, 5000, 5001, 7700, 7800, 7860, 8000, 8080, 8081, 8088, 8888, 9000, 11434,
 ];
 
 /// Ordered probe paths — first response with JSON wins.
@@ -407,6 +408,8 @@ pub struct AiProvidersPageView {
     detect_ollama_button: ViewHandle<ActionButton>,
     discover_button: ViewHandle<ActionButton>,
     add_endpoint_button: ViewHandle<ActionButton>,
+    add_form_add_button: ViewHandle<ActionButton>,
+    add_form_cancel_button: ViewHandle<ActionButton>,
     sync_intel_button: ViewHandle<ActionButton>,
     pub bucket_scores: std::collections::HashMap<String, BucketScore>,
 }
@@ -539,6 +542,14 @@ impl AiProvidersPageView {
             ActionButton::new("+ Add Endpoint", NakedTheme)
                 .on_click(|ctx| ctx.dispatch_typed_action(AiProvidersPageAction::ShowAddForm))
         });
+        let add_form_add_button = ctx.add_typed_action_view(|_| {
+            ActionButton::new("Add", NakedTheme)
+                .on_click(|ctx| ctx.dispatch_typed_action(AiProvidersPageAction::AddEndpoint))
+        });
+        let add_form_cancel_button = ctx.add_typed_action_view(|_| {
+            ActionButton::new("Cancel", NakedTheme)
+                .on_click(|ctx| ctx.dispatch_typed_action(AiProvidersPageAction::HideAddForm))
+        });
         let sync_intel_button = ctx.add_typed_action_view(|_| {
             ActionButton::new("Sync Scores", NakedTheme)
                 .on_click(|ctx| ctx.dispatch_typed_action(AiProvidersPageAction::SyncModelIntel))
@@ -584,6 +595,8 @@ impl AiProvidersPageView {
             detect_ollama_button,
             discover_button,
             add_endpoint_button,
+            add_form_add_button,
+            add_form_cancel_button,
             sync_intel_button,
             bucket_scores: load_bucket_scores(),
         }
@@ -1091,14 +1104,17 @@ impl TypedActionView for AiProvidersPageView {
                                         } else {
                                             format!("http://localhost:{port}")
                                         };
-                                        let label = match port {
-                                            1234 => "LM Studio".to_owned(),
-                                            5001 => "Kobold".to_owned(),
-                                            8000 => "vLLM".to_owned(),
-                                            8080 => "LocalAI".to_owned(),
-                                            11434 => "Ollama".to_owned(),
-                                            _ => format!("Local :{port}"),
-                                        };
+                        let label = match port {
+                            1234 => "LM Studio".to_owned(),
+                            5001 => "Kobold".to_owned(),
+                            7700 => "specsmith".to_owned(),
+                            7800 => "Vulkan AI Studio".to_owned(),
+                            8000 => "vLLM".to_owned(),
+                            8080 => "LocalAI".to_owned(),
+                            8081 => "Vulkan".to_owned(),
+                            11434 => "Ollama".to_owned(),
+                            _ => format!("Local :{port}"),
+                        };
                                         found.push((label, base, port.to_string()));
                                         continue 'port; // found on this port, next port
                                     }
@@ -1845,30 +1861,8 @@ fn render_byoe_add_form(
         );
     }
 
-    let add_btn = appearance
-        .ui_builder()
-        .button(ButtonVariant::Accent, MouseStateHandle::default())
-        .with_style(UiComponentStyles {
-            font_size: Some(CONTENT_FONT_SIZE),
-            padding: Some(Coords::uniform(6.)),
-            ..Default::default()
-        })
-        .with_centered_text_label("Add".to_string())
-        .build()
-        .on_click(|ctx, _, _| ctx.dispatch_typed_action(AiProvidersPageAction::AddEndpoint))
-        .finish();
-    let cancel_btn = appearance
-        .ui_builder()
-        .button(ButtonVariant::Secondary, MouseStateHandle::default())
-        .with_style(UiComponentStyles {
-            font_size: Some(CONTENT_FONT_SIZE),
-            padding: Some(Coords::uniform(6.)),
-            ..Default::default()
-        })
-        .with_centered_text_label("Cancel".to_string())
-        .build()
-        .on_click(|ctx, _, _| ctx.dispatch_typed_action(AiProvidersPageAction::HideAddForm))
-        .finish();
+    let add_btn = ChildView::new(&view.add_form_add_button).finish();
+    let cancel_btn = ChildView::new(&view.add_form_cancel_button).finish();
 
     Container::new(
         Flex::column()
