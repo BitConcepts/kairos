@@ -161,3 +161,31 @@
 - **Source:** ARCHITECTURE.md §Release Pipeline
 - **Status:** implemented — `app/src/kairos_updater.rs` singleton; `app/src/settings_view/about_page.rs` channel pills + toggle + status row; `.github/workflows/release.yml` CI/CD release pipeline
 
+## 24. Vulkan Model Series as First-Class BYOE Provider
+- **ID:** REQ-024
+- **Title:** Vulkan Model Series as First-Class BYOE Provider
+- **Description:** Kairos MUST register bcl-kernel's Vulkan model series (`Vulkan`, `Vulkan-Phase2`) as a built-in BYOE provider option. The provider entry MUST default to `http://127.0.0.1:8081/v1` and appear in the AI Providers list alongside Ollama, OpenAI, and other configured providers. Kairos MUST parse `bcl_metadata.llm_used` from Vulkan responses and display a non-LLM attestation badge when `llm_used=false`.
+- **Source:** ARCHITECTURE.md §Vulkan AI Studio Integration
+- **Status:** pending
+
+## 25. Vulkan Mode Toggle in Governance Settings
+- **ID:** REQ-025
+- **Title:** Vulkan Mode Toggle in Governance Settings
+- **Description:** The Kairos Settings → Governance page MUST include a Vulkan Mode toggle. When enabled, the active BYOE endpoint switches to `http://127.0.0.1:8081` (bcl serve). When disabled, the endpoint reverts to the default specsmith governance endpoint (`:7700`). The toggle state MUST persist across restarts via `GovernanceSettings`.
+- **Source:** ARCHITECTURE.md §Vulkan Mode
+- **Status:** pending
+
+## 26. Vulkan Health Status in Governance Panel
+- **ID:** REQ-026
+- **Title:** Vulkan Health Status in Governance Panel
+- **Description:** When Vulkan Mode is enabled, the Governance settings page MUST display bcl serve health status (reachable/unreachable, available models, series version) by polling `GET http://127.0.0.1:8081/health`. The health indicator MUST use the same dot+label pattern as specsmith health (green=healthy, red=unreachable, gray=unknown).
+- **Source:** ARCHITECTURE.md §Vulkan AI Studio Integration
+- **Status:** pending
+
+## 27. Vulkan AI Studio Dashboard Link
+- **ID:** REQ-027
+- **Title:** Vulkan AI Studio Dashboard Link
+- **Description:** The Governance settings page MUST include a clickable link to open the Vulkan AI Studio dashboard (`http://127.0.0.1:7800/app/`) in the system browser when bcl-kernel's dashboard is detected as running. The link MUST be hidden when the dashboard is not reachable.
+- **Source:** ARCHITECTURE.md §Vulkan AI Studio Integration
+- **Status:** pending
+

@@ -228,5 +228,45 @@
     "test_ids": [
       "TEST-023"
     ]
+  },
+  {
+    "id": "REQ-024",
+    "title": "Vulkan Model Series as First-Class BYOE Provider",
+    "description": "Kairos MUST register bcl-kernel's Vulkan model series (`Vulkan`, `Vulkan-Phase2`) as a built-in BYOE provider option. The provider entry MUST default to `http://127.0.0.1:8081/v1` and appear in the AI Providers list alongside Ollama, OpenAI, and other configured providers. Kairos MUST parse `bcl_metadata.llm_used` from Vulkan responses and display a non-LLM attestation badge when `llm_used=false`.",
+    "source": "ARCHITECTURE.md §Vulkan AI Studio Integration",
+    "status": "pending",
+    "test_ids": [
+      "TEST-024"
+    ]
+  },
+  {
+    "id": "REQ-025",
+    "title": "Vulkan Mode Toggle in Governance Settings",
+    "description": "The Kairos Settings → Governance page MUST include a Vulkan Mode toggle. When enabled, the active BYOE endpoint switches to `http://127.0.0.1:8081` (bcl serve). When disabled, the endpoint reverts to the default specsmith governance endpoint (`:7700`). The toggle state MUST persist across restarts via `GovernanceSettings`.",
+    "source": "ARCHITECTURE.md §Vulkan Mode",
+    "status": "pending",
+    "test_ids": [
+      "TEST-025"
+    ]
+  },
+  {
+    "id": "REQ-026",
+    "title": "Vulkan Health Status in Governance Panel",
+    "description": "When Vulkan Mode is enabled, the Governance settings page MUST display bcl serve health status (reachable/unreachable, available models, series version) by polling `GET http://127.0.0.1:8081/health`. The health indicator MUST use the same dot+label pattern as specsmith health (green=healthy, red=unreachable, gray=unknown).",
+    "source": "ARCHITECTURE.md §Vulkan AI Studio Integration",
+    "status": "pending",
+    "test_ids": [
+      "TEST-026"
+    ]
+  },
+  {
+    "id": "REQ-027",
+    "title": "Vulkan AI Studio Dashboard Link",
+    "description": "The Governance settings page MUST include a clickable link to open the Vulkan AI Studio dashboard (`http://127.0.0.1:7800/app/`) in the system browser when bcl-kernel's dashboard is detected as running. The link MUST be hidden when the dashboard is not reachable.",
+    "source": "ARCHITECTURE.md §Vulkan AI Studio Integration",
+    "status": "pending",
+    "test_ids": [
+      "TEST-027"
+    ]
   }
 ]

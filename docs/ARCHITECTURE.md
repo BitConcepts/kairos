@@ -225,7 +225,76 @@ When specsmith operates in YAML-first mode (`.specsmith/governance-mode = yaml`)
 - `specsmith validate --strict` enforces schema integrity.
 - The CI `governance` job runs these checks on every push.
 
-## Sister Repo
-`specsmith` lives at `../specsmith/` relative to this repository.
-Both repos are always cloned to the same parent directory.
-See `AGENTS.md §Sister Repos` for co-management details.
+## Vulkan AI Studio Integration
+
+Kairos has first-class integration with **bcl-kernel** and its **Vulkan** model series.
+Vulkan is BCL's non-LLM epistemic reasoning engine — a drop-in replacement for
+LLM-based providers via the OpenAI-compatible API shape, with `llm_used=false`
+on every response.
+
+### Integration Architecture
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                  Kairos Terminal (Rust)                  │
+│  BYOE config → http://127.0.0.1:7700 (specsmith)        │
+│  Vulkan Mode → http://127.0.0.1:8081 (bcl serve)        │
+└──────────────────────┬──────────────┬───────────────────┘
+                       │              │
+        ┌──────────────▼──┐   ┌───────▼──────────────────┐
+        │  specsmith serve │   │  bcl serve (Vulkan API)  │
+        │  :7700           │   │  :8081                   │
+        │  governance gate │   │  OpenAI-compat endpoints │
+        └──────────────────┘   │  Models:                 │
+                               │    Vulkan (general)      │
+                               │    Vulkan-Phase2 (mgmt)  │
+                               │  llm_used=false always   │
+                               └──────────────────────────┘
+```
+
+### Vulkan Model Series
+
+| Model | Port | Purpose |
+|-------|------|---------|
+| Vulkan | 8081 | General knowledge and reasoning — 21 symbolic solvers, NLI, 91K-chunk wiki pack |
+| Vulkan-Phase2 | 8081 | Self-improvement management agent — status, analyze, proposals, build, benchmark |
+
+Both models expose `POST /v1/chat/completions`, `GET /v1/models`, `GET /health`.
+All responses include `{"bcl_metadata": {"llm_used": false, "series": "Vulkan"}}`.
+Backward-compatible aliases: `bcl-kernel` → `Vulkan`, `bcl-phase2` → `Vulkan-Phase2`.
+
+### Vulkan Mode
+
+When Vulkan Mode is enabled in Settings → Governance:
+1. The BYOE endpoint switches from specsmith (`:7700`) to bcl serve (`:8081`)
+2. All AI responses come from BCL's symbolic reasoning — zero LLM, zero GPU required
+3. Responses include SHA-256 no-LLM attestation
+4. specsmith governance still runs for preflight/verify but forwards to Vulkan
+
+### GPU Backend Note
+
+Kairos uses wgpu for terminal rendering with `GPUBackend::Vulkan` on Linux/Windows.
+This is the Vulkan *graphics API* (Khronos) — completely unrelated to the Vulkan
+*model series* (BCL). The naming collision is intentional (Star Trek reference for
+the model series; Khronos standard for the GPU backend).
+
+### bcl-kernel Repository
+
+`bcl-kernel` lives at `../bcl-kernel/` (relative to the BitConcepts parent) or
+at `~/Development/bcl-kernel`. Key paths:
+- `bcl/serve/server.py` — Vulkan API server (FastAPI, OpenAI-compatible)
+- `dashboard/api.py` — Vulkan AI Studio dashboard (port 7800)
+- `bcl/kernel/` — Core transforms (observe, project, epistemic, memory, output)
+- `bcl/inference/solvers/` — 21 symbolic task solvers (97.9% BBH accuracy)
+- `knowledge_packs/` — Pre-built packs for domain knowledge
+
+See `bcl-kernel/AGENTS.md` for invariants I1–I16 and the no-LLM rule.
+
+## Sister Repos
+
+- **specsmith** — `../specsmith/` relative to this repository.
+  Both repos are always cloned to the same parent directory.
+  See `AGENTS.md §Sister Repos` for co-management details.
+- **bcl-kernel** — `~/Development/bcl-kernel` or `../bcl-kernel`.
+  Vulkan model series, non-LLM epistemic reasoning engine.
+  See `bcl-kernel/AGENTS.md` for the primary mission and invariants.

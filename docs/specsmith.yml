@@ -9,11 +9,12 @@ platforms:
 - linux
 - windows
 - macos
-spec_version: 0.10.1
-aee_phase: implementation
-description: >
-  Epistemically-governed Rust terminal. Governance backend provided by
+spec_version: 0.13.0
+aee_phase: release
+description: 'Epistemically-governed Rust terminal. Governance backend provided by
   specsmith serve (BitConcepts/specsmith).
+
+  '
 vcs_platform: github
 branching_strategy: gitflow
 default_branch: main
