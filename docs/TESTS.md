@@ -242,6 +242,50 @@
 - **Expected Behavior:** Both steps exit 0; CI governance job passes
 - **Confidence:** 0.9
 
+## TEST-024. Vulkan Model Series as First-Class BYOE Provider
+- **ID:** TEST-024
+- **Title:** Vulkan Model Series as First-Class BYOE Provider
+- **Description:** Verify Kairos lists `Vulkan` and `Vulkan-Phase2` as built-in BYOE providers in the AI Providers table. When bcl serve is running on `:8081`, selecting Vulkan sends `POST /v1/chat/completions` to that endpoint. The response `bcl_metadata.llm_used=false` triggers a non-LLM attestation badge in the agent output.
+- **Requirement ID:** REQ-024
+- **Type:** integration
+- **Verification Method:** cargo-test + manual
+- **Input:** Mock bcl serve at `127.0.0.1:8081` returning Vulkan-shaped response with `bcl_metadata.llm_used=false`; navigate to Agents → AI Providers.
+- **Expected Behavior:** Vulkan appears in provider list; chat request succeeds; attestation badge rendered; no crash when bcl serve is unreachable.
+- **Confidence:** 0.85
+
+## TEST-025. Vulkan Mode Toggle in Governance Settings
+- **ID:** TEST-025
+- **Title:** Vulkan Mode Toggle in Governance Settings
+- **Description:** Verify the Governance page renders a Vulkan Mode toggle. Enabling it sets the BYOE endpoint to `http://127.0.0.1:8081`. Disabling it reverts to `http://127.0.0.1:7700`. Toggle state persists across page navigation and app restart.
+- **Requirement ID:** REQ-025
+- **Type:** integration
+- **Verification Method:** cargo-test + manual
+- **Input:** Settings → Governance → Vulkan Mode toggle; verify `GovernanceSettings.vulkan_mode_enabled` state before and after toggle.
+- **Expected Behavior:** Toggle changes BYOE endpoint; persisted value survives page re-render; BYOE URL label updates to show active endpoint.
+- **Confidence:** 0.85
+
+## TEST-026. Vulkan Health Status in Governance Panel
+- **ID:** TEST-026
+- **Title:** Vulkan Health Status in Governance Panel
+- **Description:** When Vulkan Mode is on, the Governance page polls `GET http://127.0.0.1:8081/health` and renders a health indicator: green dot + "Vulkan healthy" when reachable, red dot + "Vulkan unreachable" when not. Available models list (Vulkan, Vulkan-Phase2) is shown when healthy.
+- **Requirement ID:** REQ-026
+- **Type:** integration
+- **Verification Method:** manual (Rust UI build + optional bcl serve)
+- **Input:** Enable Vulkan Mode; start/stop bcl serve to observe health transitions.
+- **Expected Behavior:** Health dot transitions correctly; model list shown when healthy; no crash on connection refused.
+- **Confidence:** 0.8
+
+## TEST-027. Vulkan AI Studio Dashboard Link
+- **ID:** TEST-027
+- **Title:** Vulkan AI Studio Dashboard Link
+- **Description:** The Governance page renders an "Open Vulkan AI Studio" link when `GET http://127.0.0.1:7800/health` returns 200. Clicking the link opens `http://127.0.0.1:7800/app/` in the system browser. The link is hidden when the dashboard is not reachable.
+- **Requirement ID:** REQ-027
+- **Type:** integration
+- **Verification Method:** manual (Rust UI build + bcl-kernel dashboard running)
+- **Input:** Start bcl-kernel dashboard on :7800; navigate to Settings → Governance.
+- **Expected Behavior:** Link visible when dashboard healthy; click opens browser; link hidden when dashboard stopped.
+- **Confidence:** 0.8
+
 ## TEST-023. Self-Update Channel Selector and Status Row
 - **ID:** TEST-023
 - **Title:** Self-Update Channel Selector and Status Row
