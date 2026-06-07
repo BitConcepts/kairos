@@ -334,6 +334,50 @@
     "confidence": 1.0
   },
   {
+    "id": "TEST-024",
+    "title": "Vulkan Model Series as First-Class BYOE Provider",
+    "description": "Verify Kairos lists `Vulkan` and `Vulkan-Phase2` as built-in BYOE providers in the AI Providers table. When bcl serve is running on `:8081`, selecting Vulkan sends `POST /v1/chat/completions` to that endpoint. The response `bcl_metadata.llm_used=false` triggers a non-LLM attestation badge in the agent output.",
+    "requirement_id": "REQ-024",
+    "type": "integration",
+    "verification_method": "cargo-test + manual",
+    "input": {},
+    "expected_behavior": {},
+    "confidence": 1.0
+  },
+  {
+    "id": "TEST-025",
+    "title": "Vulkan Mode Toggle in Governance Settings",
+    "description": "Verify the Governance page renders a Vulkan Mode toggle. Enabling it sets the BYOE endpoint to `http://127.0.0.1:8081`. Disabling it reverts to `http://127.0.0.1:7700`. Toggle state persists across page navigation and app restart.",
+    "requirement_id": "REQ-025",
+    "type": "integration",
+    "verification_method": "cargo-test + manual",
+    "input": {},
+    "expected_behavior": {},
+    "confidence": 1.0
+  },
+  {
+    "id": "TEST-026",
+    "title": "Vulkan Health Status in Governance Panel",
+    "description": "When Vulkan Mode is on, the Governance page polls `GET http://127.0.0.1:8081/health` and renders a health indicator: green dot + \"Vulkan healthy\" when reachable, red dot + \"Vulkan unreachable\" when not. Available models list (Vulkan, Vulkan-Phase2) is shown when healthy.",
+    "requirement_id": "REQ-026",
+    "type": "integration",
+    "verification_method": "manual (Rust UI build + optional bcl serve)",
+    "input": {},
+    "expected_behavior": {},
+    "confidence": 1.0
+  },
+  {
+    "id": "TEST-027",
+    "title": "Vulkan AI Studio Dashboard Link",
+    "description": "The Governance page renders an \"Open Vulkan AI Studio\" link when `GET http://127.0.0.1:7800/health` returns 200. Clicking the link opens `http://127.0.0.1:7800/app/` in the system browser. The link is hidden when the dashboard is not reachable.",
+    "requirement_id": "REQ-027",
+    "type": "integration",
+    "verification_method": "manual (Rust UI build + bcl-kernel dashboard running)",
+    "input": {},
+    "expected_behavior": {},
+    "confidence": 1.0
+  },
+  {
     "id": "TEST-023",
     "title": "Self-Update Channel Selector and Status Row",
     "description": "Verify the Settings → About page renders a channel selector (Stable / Latest pills), an automatic-updates toggle, and an update status row. The Stable channel pill tracks non-pre-release GitHub Releases via `fetch_latest_stable_release`; the Latest channel pill tracks the most recently published release (including pre-releases) via `fetch_latest_release_any`. The Check Now button triggers an async update check and updates the status label. The persisted channel survives app restart.",

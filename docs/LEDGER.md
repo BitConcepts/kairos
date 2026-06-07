@@ -479,3 +479,9 @@ Kairos-side wiring for specsmith's `context_window.py`:
   `governance_page.rs`, and `workspace/view.rs`
 - CI (format check + build matrix): ✓
 - Commit: `c0bb0ac` on `develop`
+
+## 2026-06-07T16:17 — specsmith migration: 0.11.3 → 0.13.0
+- **Author**: specsmith
+- **Type**: migration
+- **Status**: complete
+- **Chain hash**: `45e961338404b71e...`
