@@ -286,6 +286,28 @@
 - **Expected Behavior:** Link visible when dashboard healthy; click opens browser; link hidden when dashboard stopped.
 - **Confidence:** 0.8
 
+## TEST-028. AI Providers Page Renders All Sections
+- **ID:** TEST-028
+- **Title:** AI Providers Page Renders All Sections
+- **Description:** Verify Settings → AI Providers opens, activates `SettingsSection::AiProviders`, and renders three sections (Cloud, Ollama, BYOE) without layout errors. Cloud section shows provider catalog. Ollama section shows detect button. BYOE section shows Discover, + Add Endpoint buttons and preset pills including Vulkan.
+- **Requirement ID:** REQ-028
+- **Type:** integration
+- **Verification Method:** Kairos integration framework (`test_ai_providers_page_renders`); requires real display.
+- **Input:** Settings sidebar → AI Providers click.
+- **Expected Behavior:** `current_settings_section() == AiProviders`; page renders without panic.
+- **Confidence:** 0.85
+
+## TEST-029. AI Providers Integration Test Wiring
+- **ID:** TEST-029
+- **Title:** AI Providers Integration Test Wiring
+- **Description:** Verify `test_ai_providers_page_renders` is registered in `ui_tests.rs` (with `#[ignore]`), in the manual runner `integration.rs`, and in `test.rs` module declarations. The test compiles and can be invoked via `cargo run -p integration --bin integration -- test_ai_providers_page_renders`.
+- **Requirement ID:** REQ-029
+- **Type:** build
+- **Verification Method:** cargo check + grep
+- **Input:** `cargo check -p integration`; grep for `test_ai_providers_page_renders` in all three files.
+- **Expected Behavior:** Compilation succeeds; test name found in all three registration points.
+- **Confidence:** 0.9
+
 ## TEST-023. Self-Update Channel Selector and Status Row
 - **ID:** TEST-023
 - **Title:** Self-Update Channel Selector and Status Row

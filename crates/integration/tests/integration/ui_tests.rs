@@ -37,6 +37,10 @@ integration_tests! {
     // Run manually: cargo run -p integration --bin integration -- test_governance_page_renders
     #[ignore = "Requires real display; run manually with WARPUI_USE_REAL_DISPLAY_IN_INTEGRATION_TESTS=1"]
     test_governance_page_renders,
+    // AI Providers page — requires real display.
+    // Run manually: cargo run -p integration --bin integration -- test_ai_providers_page_renders
+    #[ignore = "Requires real display; run manually with WARPUI_USE_REAL_DISPLAY_IN_INTEGRATION_TESTS=1"]
+    test_ai_providers_page_renders,
     #[ignore = "Affected by agent_view feature flag UI changes"]
     test_scroll_to_hidden_block_and_open_context_menu_with_keybinding,
     #[ignore = "Affected by agent_view feature flag UI changes"]

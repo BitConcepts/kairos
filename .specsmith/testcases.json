@@ -378,6 +378,28 @@
     "confidence": 1.0
   },
   {
+    "id": "TEST-028",
+    "title": "AI Providers Page Renders All Sections",
+    "description": "Verify Settings → AI Providers opens, activates `SettingsSection::AiProviders`, and renders three sections (Cloud, Ollama, BYOE) without layout errors. Cloud section shows provider catalog. Ollama section shows detect button. BYOE section shows Discover, + Add Endpoint buttons and preset pills including Vulkan.",
+    "requirement_id": "REQ-028",
+    "type": "integration",
+    "verification_method": "Kairos integration framework (`test_ai_providers_page_renders`); requires real display.",
+    "input": {},
+    "expected_behavior": {},
+    "confidence": 1.0
+  },
+  {
+    "id": "TEST-029",
+    "title": "AI Providers Integration Test Wiring",
+    "description": "Verify `test_ai_providers_page_renders` is registered in `ui_tests.rs` (with `#[ignore]`), in the manual runner `integration.rs`, and in `test.rs` module declarations. The test compiles and can be invoked via `cargo run -p integration --bin integration -- test_ai_providers_page_renders`.",
+    "requirement_id": "REQ-029",
+    "type": "build",
+    "verification_method": "cargo check + grep",
+    "input": {},
+    "expected_behavior": {},
+    "confidence": 1.0
+  },
+  {
     "id": "TEST-023",
     "title": "Self-Update Channel Selector and Status Row",
     "description": "Verify the Settings → About page renders a channel selector (Stable / Latest pills), an automatic-updates toggle, and an update status row. The Stable channel pill tracks non-pre-release GitHub Releases via `fetch_latest_stable_release`; the Latest channel pill tracks the most recently published release (including pre-releases) via `fetch_latest_release_any`. The Check Now button triggers an async update check and updates the status label. The persisted channel survives app restart.",
