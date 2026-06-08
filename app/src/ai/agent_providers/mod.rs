@@ -62,13 +62,16 @@ fn build_byoe_llm_infos(app: &AppContext) -> Vec<LLMInfo> {
         if provider.models.is_empty() {
             continue;
         }
+        // BYOE providers (local endpoints like Ollama, Vulkan) typically don't
+        // require API keys. Allow keyless providers through — the HTTP request
+        // will simply omit the Authorization header, which is fine for local
+        // services. If the upstream requires a key, it will return 401 and the
+        // user will see the error in the chat.
         let has_key = secrets
             .get(&provider.id)
             .map(|k| !k.is_empty())
             .unwrap_or(false);
-        if !has_key {
-            continue;
-        }
+        let _ = has_key; // API key is optional for all BYOE providers
 
         let provider_label = if provider.name.trim().is_empty() {
             provider.id.clone()

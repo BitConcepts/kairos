@@ -686,28 +686,63 @@ impl AiProvidersPageView {
     }
 
     fn spawn_test_provider(&self, idx: usize, is_cloud: bool, ctx: &mut ViewContext<Self>) {
-        let id = if is_cloud {
-            self.cloud_providers.get(idx).map(|m| m.id.clone())
+        let entry = if is_cloud {
+            self.cloud_providers.get(idx)
         } else {
-            self.endpoints.get(idx).map(|m| m.id.clone())
+            self.endpoints.get(idx)
         };
-        let id = match id {
-            Some(i) => i,
+        let (id, base_url) = match entry {
+            Some(m) => (m.id.clone(), m.base_url.clone()),
             None => return,
         };
+        // For cloud providers with no base_url, fall back to specsmith provider test.
+        // For BYOE endpoints, probe the base_url directly via HTTP.
+        let use_direct_probe = !base_url.is_empty();
         ctx.spawn(
             async move {
-                tokio::process::Command::new("specsmith")
-                    .args(["provider", "test", &id, "--json"])
-                    .env("SPECSMITH_NO_AUTO_UPDATE", "1")
-                    .output()
-                    .await
-                    .map(|o| {
-                        let text = String::from_utf8_lossy(&o.stdout).to_string();
-                        o.status.success()
-                            || text.contains("reachable")
-                            || text.contains("\"valid\":true")
-                    })
+                if use_direct_probe {
+                    // Direct HTTP probe: try /models then /health on the base URL
+                    for suffix in ["/models", "/../health", ""] {
+                        let probe_url = if suffix.is_empty() {
+                            base_url.clone()
+                        } else if suffix == "/../health" {
+                            // Strip /v1 and try /health
+                            let stripped = base_url
+                                .trim_end_matches('/')
+                                .trim_end_matches("/v1")
+                                .to_owned();
+                            format!("{stripped}/health")
+                        } else {
+                            format!("{}{suffix}", base_url.trim_end_matches('/'))
+                        };
+                        if let Ok(out) = tokio::process::Command::new("curl")
+                            .args(["-s", "--max-time", "5", &probe_url])
+                            .output()
+                            .await
+                        {
+                            let text = String::from_utf8_lossy(&out.stdout).to_string();
+                            if out.status.success()
+                                && (text.starts_with('{') || text.starts_with('['))
+                                && text.len() > 2
+                            {
+                                return Ok(true);
+                            }
+                        }
+                    }
+                    Ok(false)
+                } else {
+                    tokio::process::Command::new("specsmith")
+                        .args(["provider", "test", &id, "--json"])
+                        .env("SPECSMITH_NO_AUTO_UPDATE", "1")
+                        .output()
+                        .await
+                        .map(|o| {
+                            let text = String::from_utf8_lossy(&o.stdout).to_string();
+                            o.status.success()
+                                || text.contains("reachable")
+                                || text.contains("\"valid\":true")
+                        })
+                }
             },
             move |me, result, ctx| {
                 let status = match result {
@@ -2093,11 +2128,26 @@ fn render_provider_card(
                 .with_child(
                     Container::new(
                         Hoverable::new(MouseStateHandle::default(), move |ts| {
-                            let lbl = if is_test { "\u{2026}" } else { "Test" };
-                            let col = if ts.is_hovered() { active } else { sub.into() };
-                            Text::new_inline(lbl.to_string(), font, CONTENT_FONT_SIZE - 1.)
-                                .with_color(col)
-                                .finish()
+                            let lbl = if is_test {
+                                "Testing\u{2026}"
+                            } else {
+                                "\u{25B6} Test"
+                            };
+                            let (fg, bg, bdr) = if ts.is_hovered() {
+                                (active, accent, accent)
+                            } else {
+                                (accent.into(), sub, sub)
+                            };
+                            Container::new(
+                                Text::new_inline(lbl.to_string(), font, CONTENT_FONT_SIZE - 1.)
+                                    .with_color(fg)
+                                    .finish(),
+                            )
+                            .with_horizontal_padding(6.)
+                            .with_vertical_padding(2.)
+                            .with_border(Border::all(1.).with_border_color(bdr))
+                            .with_corner_radius(CornerRadius::with_all(Radius::Pixels(4.)))
+                            .finish()
                         })
                         .with_cursor(Cursor::PointingHand)
                         .on_click(move |ctx, _, _| ctx.dispatch_typed_action(test_action.clone()))
