@@ -119,10 +119,11 @@ fn build_byoe_llm_infos(app: &AppContext) -> Vec<LLMInfo> {
 /// Placeholder entry used when no valid providers are configured.
 /// `AvailableLLMs::new` rejects empty lists, so at least one entry is required.
 /// This entry is shown as disabled (grey) and cannot be selected — it guides the
-/// user to Settings → Agents → Providers to add a provider.
+/// user to Settings → AI Providers to add a provider.
 fn placeholder_llm_info() -> LLMInfo {
     LLMInfo {
-        display_name: "No providers configured — go to Settings → Agents → Providers".to_owned(),
+        display_name: "No providers configured \u{2014} go to Settings \u{2192} AI Providers"
+            .to_owned(),
         base_model_name: "No provider".to_owned(),
         id: ai::LLMId::from("BYOE-placeholder"),
         reasoning_level: None,

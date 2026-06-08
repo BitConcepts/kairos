@@ -1,4 +1,4 @@
-﻿# Kairos Terminal — English (source-of-truth locale)
+# Kairos Terminal — English (source-of-truth locale)
 # 本文件由多 agent 并行编辑,各自维护自己的 SECTION,key 以 surface 前缀隔离避免冲突。
 # 加 key 时 ctrl-F 找到对应 SECTION 头追加;新 surface 在文件末尾加新 SECTION。
 #
@@ -124,7 +124,7 @@ agent-management-artifact-file = File
 agent-management-source-scheduled = Scheduled
 agent-management-source-local-agent = Kairos (local agent)
 agent-management-source-cloud-agent = Kairos (cloud agent)
-agent-management-source-oz-web = Oz Web
+agent-management-source-oz-web = Cloud Web
 agent-management-source-github-action = GitHub Action
 agent-management-no-session-available = No session available
 agent-management-session-expired = Session expired
@@ -207,7 +207,7 @@ ai-document-attach-to-active-session = Attach to active session
 ai-document-copy-plan-id = Copy plan ID
 ai-document-plan-id-copied = Plan ID copied to clipboard
 ai-conversation-view-in-oz = View in Oz
-ai-conversation-view-in-oz-tooltip = View this run in the Oz web app
+ai-conversation-view-in-oz-tooltip = View this run in the Cloud Web app
 ai-artifact-prepare-download-failed = Failed to prepare file download.
 ai-block-open-in-github = Open in GitHub
 ai-block-open-in-code-review = Open in code review
@@ -536,7 +536,7 @@ settings-section-code = Code
 settings-section-code-indexing = LSP Management
 settings-section-editor-and-code-review = Editor and Code Review
 settings-section-cloud-environments = Environments
-settings-section-oz-cloud-api-keys = Oz Cloud API Keys
+settings-section-oz-cloud-api-keys = Cloud API Keys
 settings-title = Settings
 
 # Context menu items (split / close pane)
@@ -692,8 +692,8 @@ settings-mcp-update-modal-no-updates = No updates available
 # --- ANCHOR-SUB-PLATFORM (agent-settings-platform) ---
 # 此锚点下放 settings_view/platform_page.rs 字符串
 # 命名前缀:settings-platform-*
-settings-platform-section-title = Oz Cloud API Keys
-settings-platform-description = Create and manage API keys to allow other Oz cloud agents to access your Kairos account.
+settings-platform-section-title = Cloud API Keys
+settings-platform-description = Create and manage API keys to allow other cloud agents to access your Kairos account.
     For more information, visit the
 settings-platform-documentation-link = Documentation.
 settings-platform-create-button = + Create API Key
@@ -1228,7 +1228,7 @@ settings-code-global-search-desc = Adds global file search to the left side tool
 settings-privacy-page-title = Privacy
 settings-privacy-modal-add-regex-title = Add regex pattern
 settings-privacy-safe-mode-title = Secret redaction
-settings-privacy-safe-mode-description = When this setting is enabled, Kairos will scan blocks, the contents of Kairos Drive objects, and Oz prompts for potential sensitive information and prevent saving or sending this data to any servers. You can customize this list via regexes.
+settings-privacy-safe-mode-description = When this setting is enabled, Kairos will scan blocks, the contents of Kairos Drive objects, and agent prompts for potential sensitive information and prevent saving or sending this data to any servers. You can customize this list via regexes.
 settings-privacy-user-secret-regex-title = Custom secret redaction
 settings-privacy-user-secret-regex-description = Use regex to define additional secrets or data you'd like to redact. This will take effect when the next command runs. You can use the inline (?i) flag as a prefix to your regex to make it case-insensitive.
 settings-privacy-telemetry-title = Help improve Kairos
@@ -1333,7 +1333,7 @@ settings-exec-profile-editor-directory-allowlist-desc = Give the agent file acce
 settings-exec-profile-editor-command-allowlist = Command allowlist
 settings-exec-profile-editor-command-allowlist-desc = Regular expressions to match commands that can be automatically executed by Oz.
 settings-exec-profile-editor-command-denylist = Command denylist
-settings-exec-profile-editor-command-denylist-desc = Regular expressions to match commands that Oz should always ask permission to execute.
+settings-exec-profile-editor-command-denylist-desc = Regular expressions to match commands that the agent should always ask permission to execute.
 settings-exec-profile-editor-mcp-allowlist = MCP allowlist
 settings-exec-profile-editor-mcp-allowlist-desc = MCP servers that are allowed to be called by Oz.
 settings-exec-profile-editor-mcp-denylist = MCP denylist
@@ -1820,8 +1820,8 @@ keybinding-desc-workspace-view-changelog = View latest changelog
 # Resource center / Drive export / CLI
 keybinding-desc-workspace-toggle-resource-center = Toggle resource center
 keybinding-desc-workspace-export-all-warp-drive-objects = Export all Kairos Drive objects
-keybinding-desc-workspace-install-cli = Install Oz CLI command
-keybinding-desc-workspace-uninstall-cli = Uninstall Oz CLI command
+keybinding-desc-workspace-install-cli = Install CLI command
+keybinding-desc-workspace-uninstall-cli = UnInstall CLI command
 
 # AI assistant / agents
 keybinding-desc-workspace-toggle-ai-assistant = Toggle Kairos AI
@@ -1902,8 +1902,8 @@ keybinding-desc-workspace-view-first-time-user-experience = [Debug] View first-t
 keybinding-desc-workspace-open-build-plan-migration-modal = [Debug] Open Build Plan Migration Modal
 keybinding-desc-workspace-reset-build-plan-migration-modal-state = [Debug] Reset Build Plan Migration Modal State
 keybinding-desc-workspace-undismiss-aws-login-banner = [Debug] Un-dismiss AWS login banner
-keybinding-desc-workspace-open-oz-launch-modal = [Debug] Open Oz Launch Modal
-keybinding-desc-workspace-reset-oz-launch-modal-state = [Debug] Reset Oz Launch Modal State
+keybinding-desc-workspace-open-oz-launch-modal = [Debug] Open Launch Modal
+keybinding-desc-workspace-reset-oz-launch-modal-state = [Debug] Reset Launch Modal State
 keybinding-desc-workspace-open-openwarp-launch-modal = [Debug] Open OpenWarp Launch Modal
 keybinding-desc-workspace-reset-openwarp-launch-modal-state = [Debug] Reset OpenWarp Launch Modal State
 keybinding-desc-workspace-install-opencode-warp-plugin = [Debug] Install OpenCode Kairos plugin
@@ -2212,8 +2212,8 @@ rules-add-button = Add
 rules-init-project-button = Initialize Project
 
 # --- Agent view zero-state + message bar ---
-agent-zero-state-title = New Oz agent conversation
-agent-zero-state-title-cloud = New Oz cloud agent conversation
+agent-zero-state-title = New agent conversation
+agent-zero-state-title-cloud = New cloud agent conversation
 agent-zero-state-description = Send a prompt below to start a new conversation
 agent-zero-state-description-with-location = Send a prompt below to start a new conversation in `{ $location }`
 agent-zero-state-switch-model = switch model
@@ -2455,10 +2455,10 @@ menu-attach-as-agent-context = Attach as agent context
 slash-cmd-agent-desc = Start a new conversation
 slash-cmd-add-mcp-desc = Add new MCP server
 slash-cmd-pr-comments-desc = Pull GitHub PR review comments
-slash-cmd-create-environment-desc = Create an Oz environment (Docker image + repos) via guided setup
+slash-cmd-create-environment-desc = Create a cloud environment (Docker image + repos) via guided setup
 slash-cmd-create-environment-hint = <optional repo paths or GitHub URLs>
 slash-cmd-docker-sandbox-desc = Create a new docker sandbox terminal session
-slash-cmd-create-new-project-desc = Have Oz walk you through creating a new coding project
+slash-cmd-create-new-project-desc = Have the agent walk you through creating a new coding project
 slash-cmd-create-new-project-hint = <describe what you want to build>
 slash-cmd-open-skill-desc = Open a skill's markdown file in Kairos's built-in editor
 slash-cmd-skills-desc = Invoke a skill
@@ -3063,11 +3063,11 @@ agent-tip-open-code-review = `/open-code-review` to open the code review panel a
 agent-tip-new-conversation = `/new` to start a new agent conversation with clean context.
 agent-tip-compact = `/compact` to summarize the current conversation and free up space in the context window.
 agent-tip-usage = `/usage` to show your current AI credits usage.
-agent-tip-oz-headless = Use the `oz` command to run an Oz agent in headless mode, useful for remote machines.
+agent-tip-oz-headless = Use the `oz` command to run an agent in headless mode, useful for remote machines.
 agent-tip-selected-text-context = Right-click selected text to attach it as agent context.
 agent-tip-project-rules = Use `AGENTS.md` or `CLAUDE.md` to apply project-scoped rules.
 agent-tip-url-context = Paste a URL to attach that webpage as context for the agent.
-agent-tip-warpify-ssh = Warpify a remote SSH session to enable Oz inside that environment.
+agent-tip-warpify-ssh = Integrate a remote SSH session to enable the agent inside that environment.
 agent-tip-switch-profiles = Switch agent profiles to quickly change models and agent permissions.
 agent-tip-init-rules = `/init` to generate a `WARP.md` file and define project rules for the agent.
 agent-tip-auto-approve = <keybinding> to auto-approve the agent's commands and diffs for the rest of the session.
@@ -3156,7 +3156,7 @@ onboarding-intention-terminal-title = Just use the terminal
 onboarding-intention-terminal-badge = No AI features
 onboarding-intention-terminal-description = A modern terminal optimized for speed, context, and control without AI.
 onboarding-ai-feature-warp-agents = Kairos agents
-onboarding-ai-feature-oz-cloud-agents-platform = Oz cloud agents platform
+onboarding-ai-feature-oz-cloud-agents-platform = Cloud agents platform
 onboarding-ai-feature-next-command-predictions = Next command predictions
 onboarding-ai-feature-prompt-suggestions = Prompt suggestions
 onboarding-ai-feature-codebase-context = Codebase context
