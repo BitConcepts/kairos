@@ -189,3 +189,17 @@
 - **Source:** ARCHITECTURE.md §Vulkan AI Studio Integration
 - **Status:** pending
 
+## 28. AI Providers Page with Cloud, Ollama, and BYOE Sections
+- **ID:** REQ-028
+- **Title:** AI Providers Page with Cloud, Ollama, and BYOE Sections
+- **Description:** Kairos MUST provide a Settings → AI Providers page with three sections: (1) Cloud Providers catalog with API key entry, per-provider test, and Scan All button; (2) Ollama section with auto-detect, model list with VRAM filter, pull/delete; (3) Custom Endpoints (BYOE) with preset pills (vLLM, LM Studio, Kobold, LocalAI, Text Gen WebUI, Vulkan), Add Endpoint form, Discover button scanning ports 1234/3000/4000/5000/5001/7700/7800/7860/8000/8080/8081/8088/8888/9000/11434, per-endpoint test/toggle/delete. All provider state persists to `~/.specsmith/providers.json`.
+- **Source:** ARCHITECTURE.md §AI Model Intelligence Panel + ai_providers_page.rs
+- **Status:** implemented — `app/src/settings_view/ai_providers_page.rs`
+
+## 29. AI Providers Integration Test
+- **ID:** REQ-029
+- **Title:** AI Providers Integration Test
+- **Description:** The Kairos integration test suite MUST include `test_ai_providers_page_renders` verifying that Settings → AI Providers opens, activates `SettingsSection::AiProviders`, and renders without panicking. The test MUST be registered in both the nextest suite (`ui_tests.rs`, `#[ignore]` for CI) and the manual runner (`integration.rs`).
+- **Source:** crates/integration/src/test/settings_ai_providers.rs
+- **Status:** implemented — `crates/integration/src/test/settings_ai_providers.rs`; wired into `test.rs`, `ui_tests.rs`, `integration.rs`
+
