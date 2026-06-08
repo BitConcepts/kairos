@@ -37,14 +37,10 @@ use warpui::{
 
 // ── Provider type helpers ──────────────────────────────────────────────────────
 
-fn type_icon(pt: &str) -> &'static str {
-    match pt {
-        "cloud" => "\u{2601}",        // ☁
-        "ollama" => "\u{1F999}",      // 🦙
-        "byoe" => "\u{1F50C}",        // 🔌
-        "huggingface" => "\u{1F917}", // 🤗
-        _ => "\u{1F517}",             // 🔗
-    }
+fn type_icon(_pt: &str) -> &'static str {
+    // Emoji codepoints don't render in the UI font on all platforms.
+    // Return empty — the type_label badge already identifies the provider kind.
+    ""
 }
 
 fn type_label(pt: &str) -> &'static str {
@@ -59,9 +55,9 @@ fn type_label(pt: &str) -> &'static str {
 
 fn status_label(s: &str) -> &'static str {
     match s {
-        "reachable" => "\u{25CF} reachable",
-        "unreachable" => "\u{25CF} unreachable",
-        _ => "\u{25CB} untested",
+        "reachable" => "* reachable",
+        "unreachable" => "* unreachable",
+        _ => "o untested",
     }
 }
 
@@ -527,15 +523,15 @@ impl AiProvidersPageView {
         );
 
         let scan_all_button = ctx.add_typed_action_view(|_| {
-            ActionButton::new("\u{2601} Scan All", NakedTheme)
+            ActionButton::new("Scan All", NakedTheme)
                 .on_click(|ctx| ctx.dispatch_typed_action(AiProvidersPageAction::ScanAllCloud))
         });
         let detect_ollama_button = ctx.add_typed_action_view(|_| {
-            ActionButton::new("\u{1F999} Detect Ollama", NakedTheme)
+            ActionButton::new("Detect Ollama", NakedTheme)
                 .on_click(|ctx| ctx.dispatch_typed_action(AiProvidersPageAction::DetectOllama))
         });
         let discover_button = ctx.add_typed_action_view(|_| {
-            ActionButton::new("\u{1F50E} Discover", NakedTheme)
+            ActionButton::new("Discover", NakedTheme)
                 .on_click(|ctx| ctx.dispatch_typed_action(AiProvidersPageAction::DiscoverEndpoints))
         });
         let add_endpoint_button = ctx.add_typed_action_view(|_| {
@@ -1389,12 +1385,7 @@ impl SettingsWidget for AiProvidersPageWidget {
             .with_child(
                 Expanded::new(
                     1.,
-                    section_title(
-                        "\u{2601}  Cloud Providers",
-                        font,
-                        active.into(),
-                        CONTENT_FONT_SIZE,
-                    ),
+                    section_title("Cloud Providers", font, active.into(), CONTENT_FONT_SIZE),
                 )
                 .finish(),
             )
@@ -1437,7 +1428,7 @@ impl SettingsWidget for AiProvidersPageWidget {
             .with_child(
                 Expanded::new(
                     1.,
-                    section_title("\u{1F999}  Ollama", font, active.into(), CONTENT_FONT_SIZE),
+                    section_title("Ollama", font, active.into(), CONTENT_FONT_SIZE),
                 )
                 .finish(),
             )
@@ -1465,7 +1456,7 @@ impl SettingsWidget for AiProvidersPageWidget {
                 Expanded::new(
                     1.,
                     section_title(
-                        "\u{1F50C}  Custom Endpoints (BYOE)",
+                        "Custom Endpoints (BYOE)",
                         font,
                         active.into(),
                         CONTENT_FONT_SIZE,
@@ -1514,8 +1505,8 @@ impl SettingsWidget for AiProvidersPageWidget {
             byoe_cards.add_child(
                 Container::new(
                     Text::new(
-                        "No custom endpoints \u{2014} click \u{201c}+ Add Endpoint\u{201d} or \
-                         \u{201c}\u{1F50E} Discover\u{201d} to scan local ports."
+                        "No custom endpoints -- click \"+ Add Endpoint\" or \
+                         \"Discover\" to scan local ports."
                             .to_string(),
                         font,
                         CONTENT_FONT_SIZE,
@@ -1997,11 +1988,7 @@ fn render_provider_card(
     } else {
         model.base_url.clone()
     };
-    let key_hint = if model.api_key_set {
-        "\u{1F511}"
-    } else {
-        "\u{2205}"
-    };
+    let key_hint = if model.api_key_set { "[key]" } else { "" };
     let enabled = model.enabled;
 
     let toggle_action = if is_cloud {
@@ -2118,7 +2105,9 @@ fn render_provider_card(
                                 .finish()
                         })
                         .with_cursor(Cursor::PointingHand)
-                        .on_click(move |ctx, _, _| ctx.dispatch_typed_action(toggle_action.clone()))
+                        .on_click(move |ctx, _, _| {
+                            ctx.dispatch_typed_action(toggle_action.clone());
+                        })
                         .finish(),
                     )
                     .with_margin_left(6.)
@@ -2128,15 +2117,11 @@ fn render_provider_card(
                 .with_child(
                     Container::new(
                         Hoverable::new(MouseStateHandle::default(), move |ts| {
-                            let lbl = if is_test {
-                                "Testing\u{2026}"
+                            let lbl = if is_test { "Testing..." } else { "Test" };
+                            let (fg, bdr) = if ts.is_hovered() {
+                                (active, accent)
                             } else {
-                                "\u{25B6} Test"
-                            };
-                            let (fg, bg, bdr) = if ts.is_hovered() {
-                                (active, accent, accent)
-                            } else {
-                                (accent.into(), sub, sub)
+                                (accent.into(), sub)
                             };
                             Container::new(
                                 Text::new_inline(lbl.to_string(), font, CONTENT_FONT_SIZE - 1.)
@@ -2150,14 +2135,16 @@ fn render_provider_card(
                             .finish()
                         })
                         .with_cursor(Cursor::PointingHand)
-                        .on_click(move |ctx, _, _| ctx.dispatch_typed_action(test_action.clone()))
+                        .on_click(move |ctx, _, _| {
+                            ctx.dispatch_typed_action(test_action.clone());
+                        })
                         .finish(),
                     )
                     .with_margin_right(6.)
                     .finish(),
                 )
                 .with_child(
-                    Text::new_inline(if is_exp { "\u{25B2}" } else { "\u{25BC}" }, font, 9.)
+                    Text::new_inline(if is_exp { "^" } else { "v" }, font, 9.)
                         .with_color(sub)
                         .finish(),
                 )
@@ -2171,6 +2158,7 @@ fn render_provider_card(
         .finish()
     })
     .with_cursor(Cursor::PointingHand)
+    .with_defer_events_to_children()
     .on_click(move |ctx, _, _| ctx.dispatch_typed_action(expand_action.clone()))
     .finish();
 
